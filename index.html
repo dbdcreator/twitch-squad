@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join DBD Creator Twitch Squad</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💀</text></svg>">
+
+  <style>
+    :root { --bg:#020202; --panel:#161616; --line:#2b2b2b; --text:#f4f4f4; --red:#b90e11; --red-dark:#65090b; --green:#20e65c; }
+    * { box-sizing:border-box; }
+    body {
+    margin:0;
+    min-height:100vh;
+    background:
+        linear-gradient(rgba(2,2,2,0.75), rgba(2,2,2,0.75)),
+        url('assets/fone.gif');
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+    color:var(--text);
+    font-family:Arial,Helvetica,sans-serif;
+    letter-spacing:.02em;
+    font-size:18px;
+}
+    button,input,textarea,select { font-family:inherit; }
+    .boot-screen { position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center; background:#000; transition:.5s; }
+    .boot-screen.hide { opacity:0; visibility:hidden; pointer-events:none; }
+    .boot-gif { width:min(70vw,440px); max-height:50vh; object-fit:contain; }
+    .page { width:min(100%,1120px); min-height:100vh; margin:0 auto; padding:30px 28px 44px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:34px; }
+    .brand { display:flex; align-items:center; gap:12px; font-size:20px; font-weight:950; text-transform:uppercase; }
+    .brand-center { position:absolute; left:50%; transform:translateX(-50%); }
+    .title-with-icon { display:flex; align-items:center; justify-content:center; gap:12px; }
+    .title-icon { width:42px; height:42px; object-fit:contain; }
+    //.squad-card .squad-icon { width:64px; height:64px; flex:0 0 auto; }
+    .squad-left { display:flex; gap:18px; align-items:center; }
+    .squad-eyebrow { display:block; }
+    .image-card img { width:100%; height:100%; object-fit:cover; display:block; }
+    .squad-left { display:flex; gap:18px; align-items:center; }
+    //.squad-left img.squad-icon { width:70px; height:70px; }
+    .screen-only-hide { display:none !important; }
+    .final-image { width:260px; height:110px; object-fit:contain; margin:0 auto 18px; display:block; }
+    .image-card { display:flex; align-items:center; justify-content:center; background:#111; }
+    .image-card img { width:100%; height:100%; object-fit:contain; }
+    .squad-eyebrow { display:flex; align-items:center; gap:8px; }
+    .squad-eyebrow .title-icon { width:22px; height:22px; }
+    .brand-logo { width:50px; height:50px; object-fit:contain; }
+    .form-label { display:block; color:#ddd; font-size:14px; font-weight:900; text-transform:uppercase; margin-bottom:10px; }
+    .top-actions { display:flex; align-items:center; gap:12px; }
+    .language { padding:9px 14px; font-size:12px; color:#aaa; }
+    .back { 
+  display:inline-flex; 
+  align-items:center; 
+  gap:8px; 
+  padding:12px 22px; 
+  margin-bottom:30px; 
+  background:linear-gradient(90deg,#171717,#242424); 
+  color:#fff;
+  border:1px solid #333;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:900;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:.2s;
+}
+.back:hover {
+  background:linear-gradient(90deg,#242424,#333);
+  transform:translateY(-1px);
+}
+    main { width:min(100%,700px); margin:0 auto; overflow:hidden; }
+    .screen { display:none; } .screen.active { display:block; }
+    .intro-card,.status-card,.form-card,.squad-card,.thanks-card,.rules-card { background:var(--panel); border:1px solid #242424; border-radius:10px; margin-bottom:24px; }
+    .intro-card,.thanks-card { padding:34px; text-align:center; }
+    .intro-card h1,.thanks-card h1 { margin:0 0 14px; font-size:34px; line-height:1.05; text-transform:uppercase; }
+    .intro-card p,.thanks-card p { margin:0 auto 22px; color:#b8b8b8; max-width:610px; line-height:1.5; }
+    .streamers { margin:26px 0; text-align:left; background:#101010; border:1px solid #292929; border-radius:8px; padding:20px; }
+    .streamers h2 { margin:0 0 16px; font-size:18px; text-transform:uppercase; }
+    .squad-description { color:#b8b8b8; font-size:14px; line-height:1.55; margin:0 0 22px; text-transform:none; }
+    .streamer-list { display:grid; gap:12px; margin:0; padding:0; list-style:none; }
+    .streamer-list li { display:flex; align-items:center; justify-content:space-between; gap:14px; border-bottom:1px solid #242424; padding:12px 0; color:#eee; }
+    .streamer-list li:last-child { border-bottom:0; }
+    .streamer-profile { display:flex; align-items:center; gap:12px; min-width:0; }
+    .streamer-avatar { width:44px; height:44px; border-radius:50%; object-fit:cover; background:#2a2a2a; border:1px solid #3a3a3a; flex:0 0 auto; }
+    .streamer-name { font-weight:950; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .channel-button { border:1px solid #3b2b5f; background:#181126; color:#fff; border-radius:999px; padding:9px 13px; font-size:11px; font-weight:950; text-transform:uppercase; text-decoration:none; white-space:nowrap; }
+    .channel-button:hover { background:#24163d; }
+    .hero { display:flex; flex-direction:column; align-items:center; text-align:center; margin-bottom:26px; }
+    .hero-card { width:700px; height:160px; border-radius:10px; overflow:hidden; background:transparent; margin-bottom:30px; border:0; }
+    .hero-card.image-card { width:100%; height:160px; }
+    .banner { height:76px; display:grid; grid-template-columns:1.05fr 2fr; background:#1f1233; }
+    .program-logo { background:#fff; display:flex; align-items:center; justify-content:center; padding:8px; }
+    .program-logo img,.dbd-art img { width:100%; height:100%; object-fit:contain; }
+    .dbd-art { display:flex; align-items:center; justify-content:center; background:linear-gradient(90deg,#25103c,#120819 45%,#321c5d); padding:8px; }
+    .hero-body { height:184px; display:grid; grid-template-columns:1.05fr 2fr; }
+    .side-list { border-right:1px solid #242424; padding:24px 14px; }
+    .dot-row { height:24px; display:flex; align-items:center; gap:11px; opacity:.55; }
+    .dot { width:16px; height:16px; border-radius:50%; background:#242424; } .line { flex:1; height:4px; background:#343434; border-radius:999px; }
+    .spark { width:6px; height:6px; border-radius:50%; background:#8535ff; } .spark.red { background:#9b1f25; }
+    .empty-preview { background:linear-gradient(135deg,rgba(255,255,255,.04),transparent 70%); }
+    .title { font-size:30px; font-weight:950; text-transform:uppercase; margin:0 0 10px; }
+    .subtitle { color:#858585; font-size:13px; line-height:1.45; text-transform:uppercase; margin:0; }
+    .squad-card { 
+    min-height:82px; 
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    padding:14px 22px; 
+    color:inherit; 
+    text-decoration:none;
+    transition:0.25s ease;
+}
+.squad-card:hover {
+    background:#222222;
+    border-color:#444444;
+    transform:translateY(-2px);
+}
+    .squad-left { display:flex; gap:16px; align-items:center; }
+    .squad-extra-banner { width:100%; max-width:700px; height:220px; border-radius:10px; margin:24px auto; display:block; object-fit:cover; }
+    .squad-icon { width:120px; height:120px; border-radius:0; object-fit:contain; background:transparent; margin-left:-20px; margin-top:-20px; margin-bottom:-20px; }
+    .eyebrow,.hint { color:#818181; font-size:11px; font-weight:900; text-transform:uppercase; }
+    .squad-name { font-size:20px; font-weight:950; text-transform:uppercase; } .hint { margin-top:5px; } .chevron { color:#777; font-size:32px; }
+    .requirements { padding:28px 26px 24px; }
+    .requirements h2 { margin:0 0 8px; font-size:20px; text-transform:uppercase; }
+    .requirements p { margin:0 0 24px; color:#b7b7b7; font-size:14px; line-height:1.4; text-transform:uppercase; }
+    .requirement { display:flex; gap:14px; margin-bottom:18px; align-items:flex-start; }
+    .check { width:21px; height:21px; border-radius:50%; background:#2d2d2d; position:relative; flex:0 0 auto; margin-top:1px; }
+    .check:after { content:'✓'; position:absolute; inset:-1px 0 0; text-align:center; color:#111; font-size:15px; font-weight:950; }
+    .status-title { font-size:16px; font-weight:950; text-transform:uppercase; } .status-sub { color:#818181; font-size:12px; font-weight:900; text-transform:uppercase; margin-top:5px; }
+    .match-button,.submit,.primary-button { width:100%; min-height:50px; border:0; color:#fff; font-size:15px; font-weight:950; text-transform:uppercase; cursor:pointer; background:linear-gradient(135deg,transparent 0 12%,rgba(255,255,255,.07) 12% 24%,transparent 24%),linear-gradient(90deg,var(--red-dark),var(--red),var(--red-dark)); }
+    .match-button.done { background:linear-gradient(90deg,#0f6b2f,#11953e,#0f6b2f); }
+    .form-card { padding:28px; } .form-card h2 { margin:0 0 24px; font-size:20px; text-transform:uppercase; }
+    input,textarea,select { width:100%; border:1px solid var(--line); background:#121212; color:#fff; padding:17px 16px; margin-bottom:18px; outline:none; font-size:16px; }
+    select:invalid { color:#777; }
+    select option { color:#fff; }
+    select option:first-child { color:#777; }
+    textarea { min-height:140px; resize:vertical; } input:focus,textarea:focus,select:focus { border-color:#666; }
+    .message { display:none; padding:14px 16px; margin-top:16px; border:1px solid #2d2d2d; background:#101010; font-size:14px; line-height:1.4; }
+    .message.ok { display:block; border-color:#174d28; color:#70ff9d; } .message.warn { display:block; border-color:#5b3c12; color:#ffd184; }
+    .rules-card { padding:26px; } .rules-card h2 { margin:0 0 18px; text-transform:uppercase; font-size:20px; }
+    .rules-table { width:100%; border-collapse:collapse; font-size:14px; } .rules-table th,.rules-table td { border:1px solid #2d2d2d; padding:13px; text-align:left; vertical-align:top; } .rules-table th { background:#1d1d1d; text-transform:uppercase; }
+    .thanks-actions { display:grid; gap:12px; margin-top:14px; } .hidden-reset { position:fixed; right:8px; bottom:8px; width:26px; height:26px; opacity:0; cursor:pointer; z-index:200; } .final-note { text-align:center; color:#ddd; line-height:1.5; margin:24px 0 0; }
+    footer { text-align:center; color:#4c4c4c; font-size:10px; margin-top:24px; } footer a { color:#777; text-decoration:none; }
+
+    /* final layout fixes */
+    .formScreen-hide-brand {}
+    .hero-card.image-mode {
+      width:700px;
+      height:260px;
+      background:transparent;
+      border:0;
+    }
+    .hero-card.image-mode img {
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      border-radius:12px;
+    }
+    .squad-left {
+      gap:18px;
+    }
+    .squad-icon-large {
+      width:72px;
+      height:72px;
+      flex:0 0 auto;
+    }
+    .squad-content {
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    .thanks-banner-large {
+    width:100%;
+    max-width:650px;
+    height:120px;
+    object-fit:contain;
+    margin:0 auto 24px;
+}
+
+    .modal { position:fixed; inset:0; display:none; align-items:center; justify-content:center; padding:22px; background:rgba(0,0,0,.78); z-index:50; } .modal.show { display:flex; }
+    .close { border:1px solid #333; background:#060606; color:#fff; border-radius:999px; width:38px; height:38px; cursor:pointer; font-size:20px; }
+
+    @media (max-width:720px) { .page { padding:22px 16px 32px; } header { align-items:flex-start; flex-direction:column; } main { width:100%; } .hero-card { width:100%; max-width:460px; }
+  </style>
+</head>
+<body>
+  <div class="boot-screen" id="bootScreen"><img class="boot-gif" id="bootGif" alt="Loading"></div>
+  <div class="page">
+    <header id="mainHeader"><div class="brand brand-center"><a id="headerLogoLink" href="#" target="_blank"><img class="brand-logo" id="headerLogo" alt="DBD Logo"></a> Dead by Daylight</div></header>
+    <main>
+      <section class="screen active" id="introScreen"><div class="intro-card"><h1>DBD Creator | Twitch Squad</h1><p>This is the application page for joining the Twitch Squad for DBD Creator members and candidates.</p><div class="streamers">
+<p class="squad-description">Since DBD Creator does not have an official Twitch page, we have created our own fan team, similar to the "Fog Whisperers" squad. If you would like to become a member of our DBD Creator - Fans squad on Twitch, please fill out the form below, and we will send you an invitation after reviewing your submission!</p>
+<h2>Already with us:</h2><ul class="streamer-list"><li><div class="streamer-profile"><img class="streamer-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/d557ad13-96ec-4116-9217-faad45e9d742-profile_image-70x70.png" alt="Streamer avatar"><span class="streamer-name">Otzdarva
+</span></div><a class="channel-button" href="https://www.twitch.tv/otzdarva" target="_blank" rel="noopener">Go to channel</a></li><li><div class="streamer-profile"><img class="streamer-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/ecc9d1fc-9925-4e0a-83ca-d5adc22915ad-profile_image-70x70.png" alt="Streamer avatar"><span class="streamer-name">LilithOmen
+</span></div><a class="channel-button" href="https://www.twitch.tv/lilithomen" target="_blank" rel="noopener">Go to channel</a></li><li><div class="streamer-profile"><img class="streamer-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/01864130-70ea-443f-a02a-776edf64d582-profile_image-70x70.png" alt="Streamer avatar"><span class="streamer-name">JG_Darhk
+</span></div><a class="channel-button" href="https://www.twitch.tv/jg_darhk" target="_blank" rel="noopener">Go to channel</a></li><li><div class="streamer-profile"><img class="streamer-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/c39afce5-9518-43b3-8007-51c1b7f596f4-profile_image-70x70.png" alt="Streamer avatar"><span class="streamer-name">MCPLEH
+</span></div><a class="channel-button" href="https://www.twitch.tv/mcpleh" target="_blank" rel="noopener">Go to channel</a></li></ul></div><button class="primary-button" id="joinButton">Join</button></div></section>
+      <section class="screen" id="formScreen"><button class="back" id="backToIntro">‹ BACK</button><section class="hero"><div class="hero-card image-card"><img id="formScreenImage" alt="Application preview"></div><h1 class="title">DBD Creator | Twitch Squad</h1><p class="subtitle">Submit an application to join the Twitch Squad.<br>To do this, fill out the form below.</p></section><a class="squad-card" href="https://www.twitch.tv/team/playtestbhvr" target="_blank" rel="noopener"><div class="squad-left"><img class="squad-icon" id="squadIcon" alt="Twitch Squad Icon"><div><div class="eyebrow">Twitch Squad</div><div class="squad-name">DBD Creator</div><div class="hint">You will be invited here if approved</div></div></div><div class="chevron">›</div></a><section class="status-card"><div class="requirements"><h2>For streamers not in the program</h2><p>We can accept streamers into the squad who are not part of the official DBD Creator Program, but it is important to meet certain requirements.</p><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">Requirement description</div></div></div><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">Requirement description</div></div></div><div class="hint">If you are already a member of DBD Creator. You don't have to press the button.</div></br><button class="match-button" id="matchButton" type="button">I meet the requirements</button></div></section><section class="form-card"><h2>Application to Join</h2><form id="applicationForm"><input type="email" name="email" placeholder="Email *" required><input type="text" name="nicknames" placeholder="Write your nickname: Discord *" required><input type="url" name="twitch" placeholder="Your link to Twitch *" required>
+<label class="form-label">Are you already a DBD Creator? *</label>
+<select name="creator" required>
+<option value="" disabled selected hidden>Choose an answer</option>
+<option>Yes</option>
+<option>No</option>
+<option>I'm still waiting for the acceptance response.</option>
+</select>
+<label class="form-label">Do you have a tag or logo on the DBD Creator stream? *</label>
+<select name="tagLogo" required>
+<option value="" disabled selected hidden>Choose an answer</option>
+<option>Yes, Tag</option>
+<option>Yes, Logo</option>
+<option>Yes, both options</option>
+<option>No, I didn't use any of it.</option>
+</select><input type="hidden" name="requirementsMatch" id="requirementsMatch" value="No"><textarea name="about" placeholder="Can you tell us a few words about yourself? And do you have any suggestions? *" required></textarea><button class="submit" type="submit">Submit</button><div class="message" id="formMessage"></div></form></section></section>
+      <section class="screen" id="thanksScreen"><div class="thanks-card"><img class="thanks-banner-large" id="thanksBanner" alt="DBD Banner"><h1>Thank you for submitting your application</h1><p>After checking the application, the invitation will be sent to your email address and your Twitch channel. If you haven't found it, please check your settings using the buttons below. And don't forget to join our discord, it's important to us!</p><div class="thanks-actions">
+<button class="primary-button" id="settingsButton">Check Twitch settings</button>
+<button class="primary-button" id="emailButton">Check Email</button>
+<button class="primary-button" id="discordButton">Join Discord</button>
+</div></div></section>
+    </main><button class="hidden-reset" id="resetButton" aria-label="reset"></button>
+    <footer>Developed and Managed by a third-party team, not affiliated with BHVR · </footer>
+  </div></div>
+  </div>
+
+  <iframe name="hiddenGoogleFrame" id="hiddenGoogleFrame" style="display:none"></iframe>
+  <script>
+    const LOADING_GIF_URL = 'assets/start.gif';
+    const DBD_ICON_URL = 'assets/logo.png';
+    const FORM_IMAGE_URL = 'assets/banner.png';
+    const THANKS_BANNER_URL = FORM_IMAGE_URL;
+    const HEADER_LOGO_URL = 'assets/logo.png';
+    const SQUAD_ICON_URL = 'assets/squad.png';
+    const CREATOR_PROGRAM_LOGO_URL = 'https://via.placeholder.com/220x90/ffffff/111111?text=CREATOR+PROGRAM';
+    const DBD_BANNER_LOGO_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Dead_by_Daylight_Logo.png/512px-Dead_by_Daylight_Logo.png';
+    const GOOGLE_FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSciN5lH7cGY8DkUK-MbOC3Zlij6AliC9XyDOQLjJNkm9qFtFw/formResponse';
+    const GOOGLE_ENTRY_IDS = { email:'entry.1015958467', nicknames:'entry.1366258418', twitch:'entry.2007400399', creator:'entry.1488279427', tagLogo:'entry.648248729', requirementsMatch:'entry.1132967609', about:'entry.454779804' };
+    const getEl = function(id) { return document.getElementById(id); };
+    const screens = ['introScreen','formScreen','thanksScreen'];
+    function showScreen(id) { screens.forEach(function(screenId) { getEl(screenId).classList.toggle('active', screenId === id); }); if(getEl('mainHeader')) getEl('mainHeader').style.display = (id==='introScreen'?'flex':'none'); window.scrollTo({ top:0, behavior:'smooth' }); }
+    function setImage(id,url) { const img = getEl(id); if(!img) return; img.src = url; img.onerror = function(){ img.style.display = 'none'; }; }
+    setImage('bootGif', LOADING_GIF_URL); setImage('headerLogo', DBD_ICON_URL); setImage('squadIcon', SQUAD_ICON_URL); setImage('squadTitleIcon', SQUAD_ICON_URL); setImage('formScreenImage', FORM_IMAGE_URL); setImage('thanksBanner', THANKS_BANNER_URL); setImage('creatorProgramLogo', CREATOR_PROGRAM_LOGO_URL); setImage('deadByDaylightBanner', DBD_BANNER_LOGO_URL);
+    setTimeout(function(){ const boot = getEl('bootScreen'); if(boot) boot.classList.add('hide'); }, 3000);
+    getEl('joinButton').addEventListener('click', function(){ showScreen('formScreen'); });
+    getEl('backToIntro').addEventListener('click', function(){ showScreen('introScreen'); });
+    getEl('settingsButton').addEventListener('click', function(){ window.open('https://dashboard.twitch.tv/settings/channel/featured-content', '_blank', 'noopener'); });
+    getEl('matchButton').addEventListener('click', function(){ getEl('requirementsMatch').value = 'Yes'; getEl('matchButton').textContent = 'I meet the requirements ✓'; getEl('matchButton').classList.add('done'); });
+    function showMessage(el,text,type){ el.textContent = text; el.className = 'message ' + (type || 'ok'); }
+    function hasApplication(){
+      return localStorage.getItem('dbdApplicationSubmitted') === 'true';
+    }
+
+    function markApplication(){
+      localStorage.setItem('dbdApplicationSubmitted','true');
+    }
+
+    getEl('joinButton').addEventListener('click', function(){
+      if(hasApplication()) showScreen('thanksScreen');
+      else showScreen('formScreen');
+    });
+
+    getEl('settingsButton').addEventListener('click', function(){
+      window.open('https://dashboard.twitch.tv/settings/channel/featured-content', '_blank', 'noopener');
+    });
+
+    getEl('emailButton').addEventListener('click', function(){
+      window.open(
+        'https://mail.google.com/mail/u/0/#search/from%3Adbdcreatortwitchsquad%40gmail.com%20in%3Aanywhere',
+        '_blank',
+        'noopener'
+      );
+    });
+
+    getEl('discordButton').addEventListener('click', function(){
+      window.open('https://discord.gg/THTu3rcnY6', '_blank', 'noopener');
+    });
+
+    getEl('resetButton').addEventListener('click', function(){
+      const password = prompt('Enter reset password');
+      if(password === '123'){
+        localStorage.removeItem('dbdApplicationSubmitted');
+        location.reload();
+      } else if(password !== null) {
+        alert('Wrong password');
+      }
+    });
+
+    const form = getEl('applicationForm'); 
+    const formMessage = getEl('formMessage');
+
+    form.addEventListener('submit', function(event){
+      event.preventDefault();
+
+      const data = new FormData();
+
+      data.append(GOOGLE_ENTRY_IDS.email, form.elements.email.value);
+      data.append(GOOGLE_ENTRY_IDS.nicknames, form.elements.nicknames.value);
+      data.append(GOOGLE_ENTRY_IDS.twitch, form.elements.twitch.value);
+      data.append(GOOGLE_ENTRY_IDS.creator, form.elements.creator.value);
+      data.append(GOOGLE_ENTRY_IDS.tagLogo, form.elements.tagLogo.value);
+      data.append(GOOGLE_ENTRY_IDS.about, form.elements.about.value);
+      data.append(GOOGLE_ENTRY_IDS.requirementsMatch, getEl('requirementsMatch').value);
+
+      fetch(GOOGLE_FORM_ACTION, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: data
+      });
+
+      markApplication();
+      form.reset();
+      getEl('requirementsMatch').value = 'No';
+      showScreen('thanksScreen');
+    });
+  </script>
+</body>
+</html>
