@@ -24,6 +24,16 @@
     font-size:18px;
 }
     button,input,textarea,select { font-family:inherit; }
+
+    /* subtle hover highlight for all visible buttons */
+    button:not(.hidden-reset), .channel-button {
+      transition: transform .18s ease, filter .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+    }
+    button:not(.hidden-reset):hover, .channel-button:hover {
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0,0,0,.28), 0 0 0 1px rgba(255,255,255,.08);
+    }
     .boot-screen { position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center; background:#000; transition:.5s; }
     .boot-screen.hide { opacity:0; visibility:hidden; pointer-events:none; }
     .boot-gif { width:min(70vw,440px); max-height:50vh; object-fit:contain; }
@@ -125,8 +135,10 @@
     .requirements h2 { margin:0 0 8px; font-size:20px; text-transform:uppercase; }
     .requirements p { margin:0 0 24px; color:#b7b7b7; font-size:14px; line-height:1.4; text-transform:uppercase; }
     .requirement { display:flex; gap:14px; margin-bottom:18px; align-items:flex-start; }
-    .check { width:21px; height:21px; border-radius:50%; background:#2d2d2d; position:relative; flex:0 0 auto; margin-top:1px; }
-    .check:after { content:'✓'; position:absolute; inset:-1px 0 0; text-align:center; color:#111; font-size:15px; font-weight:950; }
+    .check { width:21px; height:21px; border-radius:50%; background:#2d2d2d; position:relative; flex:0 0 auto; margin-top:1px; transition:background .2s ease, box-shadow .2s ease, transform .2s ease; }
+    .check:after { content:'✓'; position:absolute; inset:-1px 0 0; text-align:center; color:#111; font-size:15px; font-weight:950; transition:color .2s ease; }
+    .requirements.confirmed .check { background:var(--green); box-shadow:0 0 10px rgba(32,230,92,.35); transform:scale(1.06); }
+    .requirements.confirmed .check:after { color:#07150b; }
     .status-title { font-size:16px; font-weight:950; text-transform:uppercase; } .status-sub { color:#818181; font-size:12px; font-weight:900; text-transform:uppercase; margin-top:5px; }
     .match-button,.submit,.primary-button { width:100%; min-height:50px; border:0; color:#fff; font-size:15px; font-weight:950; text-transform:uppercase; cursor:pointer; background:linear-gradient(135deg,transparent 0 12%,rgba(255,255,255,.07) 12% 24%,transparent 24%),linear-gradient(90deg,var(--red-dark),var(--red),var(--red-dark)); }
     .match-button.done { background:linear-gradient(90deg,#0f6b2f,#11953e,#0f6b2f); }
@@ -197,7 +209,7 @@
 </span></div><a class="channel-button" href="https://www.twitch.tv/lilithomen" target="_blank" rel="noopener">Go to channel</a></li><li><div class="streamer-profile"><img class="streamer-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/01864130-70ea-443f-a02a-776edf64d582-profile_image-70x70.png" alt="Streamer avatar"><span class="streamer-name">JG_Darhk
 </span></div><a class="channel-button" href="https://www.twitch.tv/jg_darhk" target="_blank" rel="noopener">Go to channel</a></li><li><div class="streamer-profile"><img class="streamer-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/c39afce5-9518-43b3-8007-51c1b7f596f4-profile_image-70x70.png" alt="Streamer avatar"><span class="streamer-name">MCPLEH
 </span></div><a class="channel-button" href="https://www.twitch.tv/mcpleh" target="_blank" rel="noopener">Go to channel</a></li></ul></div><button class="primary-button" id="joinButton">Join</button></div></section>
-      <section class="screen" id="formScreen"><button class="back" id="backToIntro">‹ BACK</button><section class="hero"><div class="hero-card image-card"><img id="formScreenImage" alt="Application preview"></div><h1 class="title">DBD Creator | Twitch Squad</h1><p class="subtitle">Submit an application to join the Twitch Squad.<br>To do this, fill out the form below.</p></section><a class="squad-card" href="https://www.twitch.tv/team/playtestbhvr" target="_blank" rel="noopener"><div class="squad-left"><img class="squad-icon" id="squadIcon" alt="Twitch Squad Icon"><div><div class="eyebrow">Twitch Squad</div><div class="squad-name">DBD Creator</div><div class="hint">You will be invited here if approved</div></div></div><div class="chevron">›</div></a><section class="status-card"><div class="requirements"><h2>For streamers not in the program</h2><p>We can accept streamers into the squad who are not part of the official DBD Creator Program, but it is important to meet certain requirements.</p><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">Requirement description</div></div></div><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">Requirement description</div></div></div><div class="hint">If you are already a member of DBD Creator. You don't have to press the button.</div></br><button class="match-button" id="matchButton" type="button">I meet the requirements</button></div></section><section class="form-card"><h2>Application to Join</h2><form id="applicationForm"><input type="email" name="email" placeholder="Email *" required><input type="text" name="nicknames" placeholder="Write your nickname: Discord *" required><input type="url" name="twitch" placeholder="Your link to Twitch *" required>
+      <section class="screen" id="formScreen"><button class="back" id="backToIntro">‹ BACK</button><section class="hero"><div class="hero-card image-card"><img id="formScreenImage" alt="Application preview"></div><h1 class="title">DBD Creator | Twitch Squad</h1><p class="subtitle">Submit an application to join the Twitch Squad.<br>To do this, fill out the form below.</p></section><a class="squad-card" href="https://www.twitch.tv/team/playtestbhvr" target="_blank" rel="noopener"><div class="squad-left"><img class="squad-icon" id="squadIcon" alt="Twitch Squad Icon"><div><div class="eyebrow">Twitch Squad</div><div class="squad-name">DBD Creator</div><div class="hint">You will be invited here if approved</div></div></div><div class="chevron">›</div></a><section class="status-card"><div class="requirements"><h2>For streamers not in the program</h2><p>We can accept streamers into the squad who are not part of the official DBD Creator Program, but it is important to meet certain requirements.</p><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">You have at least 1,500 subscribers and at least 30 online viewers on your channel.</div></div></div><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">Streams on Dead by Daylight on your channel take from 80% of the time</div></div></div><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">You don't have any other squads, or you have them, but after joining us, you will put our DBD CREATOR squad in the main one</div></div></div><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">After submitting your application, you must join our discord server by filling out the following form <br>(after submitting, the discord button will appear)</div></div></div><div class="hint">Click the button below if you agree to the terms of your stay in our team.</div></br><button class="match-button" id="matchButton" type="button">I agree, I meet the requirements</button></div></section><section class="form-card"><h2>Application to Join</h2><form id="applicationForm"><input type="email" name="email" placeholder="Email *" required><input type="text" name="nicknames" placeholder="Write your nickname: Discord *" required><input type="url" name="twitch" placeholder="Your link to Twitch *" required>
 <label class="form-label">Are you already a DBD Creator? *</label>
 <select name="creator" required>
 <option value="" disabled selected hidden>Choose an answer</option>
@@ -244,7 +256,13 @@
     getEl('joinButton').addEventListener('click', function(){ showScreen('formScreen'); });
     getEl('backToIntro').addEventListener('click', function(){ showScreen('introScreen'); });
     getEl('settingsButton').addEventListener('click', function(){ window.open('https://dashboard.twitch.tv/settings/channel/featured-content', '_blank', 'noopener'); });
-    getEl('matchButton').addEventListener('click', function(){ getEl('requirementsMatch').value = 'Yes'; getEl('matchButton').textContent = 'I meet the requirements ✓'; getEl('matchButton').classList.add('done'); });
+    getEl('matchButton').addEventListener('click', function(){
+      getEl('requirementsMatch').value = 'Yes';
+      getEl('matchButton').textContent = 'I agree, I meet the requirements ✓';
+      getEl('matchButton').classList.add('done');
+      const requirements = getEl('matchButton').closest('.requirements');
+      if(requirements) requirements.classList.add('confirmed');
+    });
     function showMessage(el,text,type){ el.textContent = text; el.className = 'message ' + (type || 'ok'); }
     function hasApplication(){
       return localStorage.getItem('dbdApplicationSubmitted') === 'true';
@@ -312,6 +330,20 @@
       getEl('requirementsMatch').value = 'No';
       showScreen('thanksScreen');
     });
+
+
+    // Disable right-click context menu and F12 only.
+    document.addEventListener('contextmenu', function(event){
+      event.preventDefault();
+    });
+
+    document.addEventListener('keydown', function(event){
+      if(event.key === 'F12'){
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }, true);
+
   </script>
 </body>
 </html>
