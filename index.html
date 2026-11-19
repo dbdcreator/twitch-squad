@@ -148,6 +148,18 @@
     select option { color:#fff; }
     select option:first-child { color:#777; }
     textarea { min-height:140px; resize:vertical; } input:focus,textarea:focus,select:focus { border-color:#666; }
+
+    .discord-fields { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .discord-fields input { min-width:0; }
+    .discord-id-help { color:#777; font-size:11px; line-height:1.5; margin:-10px 0 18px; }
+    @media (max-width:520px) { .discord-fields { grid-template-columns:1fr; gap:0; } }
+    .reminder-modal { position:fixed; inset:0; z-index:300; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(0,0,0,.82); }
+    .reminder-modal.show { display:flex; }
+    .reminder-box { width:min(100%,430px); padding:26px; border:1px solid #333; border-radius:12px; background:#171717; text-align:center; box-shadow:0 18px 60px rgba(0,0,0,.55); }
+    .reminder-box h2 { margin:0 0 12px; font-size:20px; text-transform:uppercase; }
+    .reminder-box p { color:#bdbdbd; font-size:14px; line-height:1.55; margin:0 0 20px; }
+    .reminder-box .primary-button { margin-top:8px; }
+
     .message { display:none; padding:14px 16px; margin-top:16px; border:1px solid #2d2d2d; background:#101010; font-size:14px; line-height:1.4; }
     .message.ok { display:block; border-color:#174d28; color:#70ff9d; } .message.warn { display:block; border-color:#5b3c12; color:#ffd184; }
     .rules-card { padding:26px; } .rules-card h2 { margin:0 0 18px; text-transform:uppercase; font-size:20px; }
@@ -209,7 +221,11 @@
 </span></div><a class="channel-button" href="https://www.twitch.tv/lilithomen" target="_blank" rel="noopener">Go to channel</a></li><li><div class="streamer-profile"><img class="streamer-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/01864130-70ea-443f-a02a-776edf64d582-profile_image-70x70.png" alt="Streamer avatar"><span class="streamer-name">JG_Darhk
 </span></div><a class="channel-button" href="https://www.twitch.tv/jg_darhk" target="_blank" rel="noopener">Go to channel</a></li><li><div class="streamer-profile"><img class="streamer-avatar" src="https://static-cdn.jtvnw.net/jtv_user_pictures/c39afce5-9518-43b3-8007-51c1b7f596f4-profile_image-70x70.png" alt="Streamer avatar"><span class="streamer-name">MCPLEH
 </span></div><a class="channel-button" href="https://www.twitch.tv/mcpleh" target="_blank" rel="noopener">Go to channel</a></li></ul></div><button class="primary-button" id="joinButton">Join</button></div></section>
-      <section class="screen" id="formScreen"><button class="back" id="backToIntro">‹ BACK</button><section class="hero"><div class="hero-card image-card"><img id="formScreenImage" alt="Application preview"></div><h1 class="title">DBD Creator | Twitch Squad</h1><p class="subtitle">Submit an application to join the Twitch Squad.<br>To do this, fill out the form below.</p></section><a class="squad-card" href="https://www.twitch.tv/team/playtestbhvr" target="_blank" rel="noopener"><div class="squad-left"><img class="squad-icon" id="squadIcon" alt="Twitch Squad Icon"><div><div class="eyebrow">Twitch Squad</div><div class="squad-name">DBD Creator</div><div class="hint">You will be invited here if approved</div></div></div><div class="chevron">›</div></a><section class="status-card"><div class="requirements"><h2>Requirements for joining the Twitch Squad</h2><p>These are small criteria that candidates who wish to join our team must meet. We can also accept streamers who are not members of the official DBD creators program if we find your channel interesting. But the program participants are still a priority.</p><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">You have at least 1,500 followers and a minimum of 30 online viewers on your channel.</div></div></div><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">Streams on Dead by Daylight on your channel take from 80% of the time</div></div></div><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">You don't have any other squads, or you have them, but after joining us, you will put our DBD CREATOR squad in the main one</div></div></div><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">After submitting your application, you must join our discord server by filling out the following form <br>(after submitting, the discord will appear)</div></div></div><div class="hint"><br>Click the button below if you agree to the terms of your stay in our team.</div></br><button class="match-button" id="matchButton" type="button">I agree, I meet the requirements</button></div></section><section class="form-card"><h2>Application to Join</h2><form id="applicationForm"><input type="email" name="email" placeholder="Email *" required><input type="text" name="nicknames" placeholder="Write your nickname: Discord *" required><input type="url" name="twitch" placeholder="Your link to Twitch *" required>
+      <section class="screen" id="formScreen"><button class="back" id="backToIntro">‹ BACK</button><section class="hero"><div class="hero-card image-card"><img id="formScreenImage" alt="Application preview"></div><h1 class="title">DBD Creator | Twitch Squad</h1><p class="subtitle">Submit an application to join the Twitch Squad.<br>To do this, fill out the form below.</p></section><a class="squad-card" href="https://www.twitch.tv/team/playtestbhvr" target="_blank" rel="noopener"><div class="squad-left"><img class="squad-icon" id="squadIcon" alt="Twitch Squad Icon"><div><div class="eyebrow">Twitch Squad</div><div class="squad-name">DBD Creator</div><div class="hint">You will be invited here if approved</div></div></div><div class="chevron">›</div></a><section class="status-card"><div class="requirements"><h2>Requirements for joining the Twitch Squad</h2><p>These are small criteria that candidates who wish to join our team must meet. We can also accept streamers who are not members of the official DBD creators program if we find your channel interesting. But the program participants are still a priority.</p><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">You have at least 1,500 followers and a minimum of 30 online viewers on your channel.</div></div></div><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">Streams on Dead by Daylight on your channel take from 80% of the time</div></div></div><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">You don't have any other squads, or you have them, but after joining us, you will put our DBD CREATOR squad in the main one</div></div></div><div class="requirement"><span class="check"></span><div><div class="status-title">Requirement</div><div class="status-sub">After submitting your application, you must join our discord server by filling out the following form <br>(after submitting, the discord will appear)</div></div></div><div class="hint"><br>Click the button below if you agree to the terms of your stay in our team.</div></br><button class="match-button" id="matchButton" type="button">I agree, I meet the requirements</button></div></section><section class="form-card"><h2>Application to Join</h2><form id="applicationForm"><input type="email" name="email" placeholder="Email *" required><div class="discord-fields">
+  <input type="text" name="nicknames" placeholder="Discord nickname *" required>
+  <input type="text" name="discordId" placeholder="Discord User ID *" inputmode="numeric" pattern="[0-9]{17,20}" title="Enter your 17–20 digit Discord User ID" required>
+</div>
+<p class="discord-id-help">To find your ID: open Discord Settings → Advanced → enable Developer Mode. Then click your profile (or the three dots) and select “Copy User ID”.</p><input type="url" name="twitch" placeholder="Your link to Twitch *" required>
 <label class="form-label">Are you already a DBD Creator? *</label>
 <select name="creator" required>
 <option value="" disabled selected hidden>Choose an answer</option>
@@ -235,6 +251,15 @@
   </div></div>
   </div>
 
+
+  <div class="reminder-modal" id="reminderModal" role="dialog" aria-modal="true" aria-labelledby="reminderTitle">
+    <div class="reminder-box">
+      <h2 id="reminderTitle">One last reminder</h2>
+      <p>Don't forget to join our Discord server and, after receiving your Twitch invitation, add DBD Creator as your <strong>Main</strong> squad on Twitch.</p>
+      <button class="primary-button" id="reminderContinue" type="button">Got it</button>
+    </div>
+  </div>
+
   <iframe name="hiddenGoogleFrame" id="hiddenGoogleFrame" style="display:none"></iframe>
   <script>
     const LOADING_GIF_URL = 'assets/start.gif';
@@ -246,7 +271,14 @@
     const CREATOR_PROGRAM_LOGO_URL = 'https://via.placeholder.com/220x90/ffffff/111111?text=CREATOR+PROGRAM';
     const DBD_BANNER_LOGO_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Dead_by_Daylight_Logo.png/512px-Dead_by_Daylight_Logo.png';
     const GOOGLE_FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSciN5lH7cGY8DkUK-MbOC3Zlij6AliC9XyDOQLjJNkm9qFtFw/formResponse';
-    const GOOGLE_ENTRY_IDS = { email:'entry.1015958467', nicknames:'entry.1366258418', twitch:'entry.2007400399', creator:'entry.1488279427', tagLogo:'entry.648248729', requirementsMatch:'entry.1132967609', about:'entry.454779804' };
+
+    // The token is intentionally a placeholder here. Paste your bot token between the quotes.
+    // WARNING: any visitor can inspect this token in a GitHub Pages HTML file.
+    const DISCORD_BOT_TOKEN = 'PASTE_YOUR_DISCORD_BOT_TOKEN_HERE';
+    const DISCORD_GUILD_ID = '1503284738927099925';
+    const DISCORD_CHANNEL_ID = '1528078675143168112';
+
+    const GOOGLE_ENTRY_IDS = { email:'entry.1015958467', nicknames:'entry.1366258418', discordId:'entry.1613574463', twitch:'entry.2007400399', creator:'entry.1488279427', tagLogo:'entry.648248729', requirementsMatch:'entry.1132967609', about:'entry.454779804' };
     const getEl = function(id) { return document.getElementById(id); };
     const screens = ['introScreen','formScreen','thanksScreen'];
     function showScreen(id) { screens.forEach(function(screenId) { getEl(screenId).classList.toggle('active', screenId === id); }); if(getEl('mainHeader')) getEl('mainHeader').style.display = (id==='introScreen'?'flex':'none'); window.scrollTo({ top:0, behavior:'smooth' }); }
@@ -306,29 +338,89 @@
     const form = getEl('applicationForm'); 
     const formMessage = getEl('formMessage');
 
-    form.addEventListener('submit', function(event){
+    async function sendApplicationToDiscord(values) {
+      if (!DISCORD_BOT_TOKEN || DISCORD_BOT_TOKEN === 'MTU1MDMxODM0MDk1NzAyMDE4MQ.GFZbB-.hxx6kW4AVx6Db331AFWeVmVdGjJXVWKtg24qG8') {
+        console.warn('Discord bot token is not configured. Google Forms submission will still be sent.');
+        return false;
+      }
+
+      const embed = {
+        title: 'New DBD Creator | Twitch Squad Application',
+        color: 12124177,
+        fields: [
+          { name: 'Email', value: values.email || '—', inline: true },
+          { name: 'Discord nickname', value: values.nicknames || '—', inline: true },
+          { name: 'Discord ID', value: values.discordId ? `<@${values.discordId}> (${values.discordId})` : '—', inline: true },
+          { name: 'Twitch channel', value: values.twitch || '—', inline: false },
+          { name: 'DBD Creator member', value: values.creator || '—', inline: true },
+          { name: 'Tag / logo', value: values.tagLogo || '—', inline: true },
+          { name: 'Agrees to requirements', value: values.requirementsMatch || 'No', inline: true },
+          { name: 'About / suggestions', value: (values.about || '—').slice(0, 1024), inline: false }
+        ],
+        footer: { text: `Guild ID: ${DISCORD_GUILD_ID}` },
+        timestamp: new Date().toISOString()
+      };
+
+      const response = await fetch(`https://discord.com/api/v10/channels/${DISCORD_CHANNEL_ID}/messages`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bot ${DISCORD_BOT_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: values.discordId ? `<@${values.discordId}>` : '',
+          embeds: [embed],
+          allowed_mentions: { users: values.discordId ? [values.discordId] : [] }
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Discord API error ${response.status}: ${errorText}`);
+      }
+      return true;
+    }
+
+    getEl('reminderContinue').addEventListener('click', function() {
+      getEl('reminderModal').classList.remove('show');
+      showScreen('thanksScreen');
+    });
+
+    form.addEventListener('submit', async function(event){
       event.preventDefault();
 
-      // Open a blank tab immediately while the submit action is still a
-      // direct user gesture. This makes browsers less likely to block it
-      // as a popup. We navigate it to Discord after preparing the form data.
+      const values = {
+        email: form.elements.email.value.trim(),
+        nicknames: form.elements.nicknames.value.trim(),
+        discordId: form.elements.discordId.value.trim(),
+        twitch: form.elements.twitch.value.trim(),
+        creator: form.elements.creator.value,
+        tagLogo: form.elements.tagLogo.value,
+        requirementsMatch: getEl('requirementsMatch').value,
+        about: form.elements.about.value.trim()
+      };
+
       const discordTab = window.open('about:blank', '_blank');
 
       const data = new FormData();
+      data.append(GOOGLE_ENTRY_IDS.email, values.email);
+      data.append(GOOGLE_ENTRY_IDS.nicknames, values.nicknames);
+      data.append(GOOGLE_ENTRY_IDS.discordId, values.discordId);
+      data.append(GOOGLE_ENTRY_IDS.twitch, values.twitch);
+      data.append(GOOGLE_ENTRY_IDS.creator, values.creator);
+      data.append(GOOGLE_ENTRY_IDS.tagLogo, values.tagLogo);
+      data.append(GOOGLE_ENTRY_IDS.about, values.about);
+      data.append(GOOGLE_ENTRY_IDS.requirementsMatch, values.requirementsMatch);
 
-      data.append(GOOGLE_ENTRY_IDS.email, form.elements.email.value);
-      data.append(GOOGLE_ENTRY_IDS.nicknames, form.elements.nicknames.value);
-      data.append(GOOGLE_ENTRY_IDS.twitch, form.elements.twitch.value);
-      data.append(GOOGLE_ENTRY_IDS.creator, form.elements.creator.value);
-      data.append(GOOGLE_ENTRY_IDS.tagLogo, form.elements.tagLogo.value);
-      data.append(GOOGLE_ENTRY_IDS.about, form.elements.about.value);
-      data.append(GOOGLE_ENTRY_IDS.requirementsMatch, getEl('requirementsMatch').value);
+      fetch(GOOGLE_FORM_ACTION, { method:'POST', mode:'no-cors', body:data })
+        .catch(function(error){ console.error('Google Forms submission error:', error); });
 
-      fetch(GOOGLE_FORM_ACTION, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: data
-      });
+      try {
+        await sendApplicationToDiscord(values);
+      } catch (error) {
+        console.error('Discord application delivery failed:', error);
+        showMessage(formMessage, 'Your Google Form was submitted, but the Discord notification could not be sent. Please contact an administrator.', 'warn');
+      }
 
       markApplication();
       form.reset();
@@ -339,7 +431,7 @@
         discordTab.location.href = 'https://discord.gg/THTu3rcnY6';
       }
 
-      showScreen('thanksScreen');
+      getEl('reminderModal').classList.add('show');
     });
 
 
