@@ -261,6 +261,7 @@
   </div>
 
   <iframe name="hiddenGoogleFrame" id="hiddenGoogleFrame" style="display:none"></iframe>
+  <iframe name="hiddenDiscordFrame" id="hiddenDiscordFrame" style="display:none"></iframe>
   <script>
     const LOADING_GIF_URL = 'assets/start.gif';
     const DBD_ICON_URL = 'assets/logo.png';
@@ -272,11 +273,8 @@
     const DBD_BANNER_LOGO_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Dead_by_Daylight_Logo.png/512px-Dead_by_Daylight_Logo.png';
     const GOOGLE_FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSciN5lH7cGY8DkUK-MbOC3Zlij6AliC9XyDOQLjJNkm9qFtFw/formResponse';
 
-    // The token is intentionally a placeholder here. Paste your bot token between the quotes.
-    // WARNING: any visitor can inspect this token in a GitHub Pages HTML file.
-    const DISCORD_BOT_TOKEN = 'PASTE_YOUR_DISCORD_BOT_TOKEN_HERE';
-    const DISCORD_GUILD_ID = '1503284738927099925';
-    const DISCORD_CHANNEL_ID = '1528078675143168112';
+    // Discord bot credentials stay server-side in Google Apps Script Script Properties.
+    const DISCORD_RELAY_URL = 'https://script.google.com/macros/s/AKfycbx5aD9MxUBKv1JtiD8ixNzDIhTt_edLESDwZAAwOw-Cp7Yu013Bn5IKpqj3SdSpiNBMEA/exec';
 
     const GOOGLE_ENTRY_IDS = { email:'entry.1015958467', nicknames:'entry.1366258418', discordId:'entry.1613574463', twitch:'entry.2007400399', creator:'entry.1488279427', tagLogo:'entry.648248729', requirementsMatch:'entry.1132967609', about:'entry.454779804' };
     const getEl = function(id) { return document.getElementById(id); };
@@ -338,47 +336,113 @@
     const form = getEl('applicationForm'); 
     const formMessage = getEl('formMessage');
 
-    async function sendApplicationToDiscord(values) {
-      if (!DISCORD_BOT_TOKEN || DISCORD_BOT_TOKEN === 'MTU1MDMxODM0MDk1NzAyMDE4MQ.GFZbB-.hxx6kW4AVx6Db331AFWeVmVdGjJXVWKtg24qG8') {
-        console.warn('Discord bot token is not configured. Google Forms submission will still be sent.');
-        return false;
-      }
 
-      const embed = {
-        title: 'New DBD Creator | Twitch Squad Application',
-        color: 12124177,
-        fields: [
-          { name: 'Email', value: values.email || '—', inline: true },
-          { name: 'Discord nickname', value: values.nicknames || '—', inline: true },
-          { name: 'Discord ID', value: values.discordId ? `<@${values.discordId}> (${values.discordId})` : '—', inline: true },
-          { name: 'Twitch channel', value: values.twitch || '—', inline: false },
-          { name: 'DBD Creator member', value: values.creator || '—', inline: true },
-          { name: 'Tag / logo', value: values.tagLogo || '—', inline: true },
-          { name: 'Agrees to requirements', value: values.requirementsMatch || 'No', inline: true },
-          { name: 'About / suggestions', value: (values.about || '—').slice(0, 1024), inline: false }
-        ],
-        footer: { text: `Guild ID: ${DISCORD_GUILD_ID}` },
-        timestamp: new Date().toISOString()
-      };
+    function submitToGoogleForms(values) {
+      return new Promise(function(resolve, reject) {
+        const iframe = getEl('hiddenGoogleFrame');
+        if (!iframe) {
+          reject(new Error('Google Forms target iframe is missing.'));
+          return;
+        }
 
-      const response = await fetch(`https://discord.com/api/v10/channels/${DISCORD_CHANNEL_ID}/messages`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bot ${DISCORD_BOT_TOKEN}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          content: values.discordId ? `<@${values.discordId}>` : '',
-          embeds: [embed],
-          allowed_mentions: { users: values.discordId ? [values.discordId] : [] }
-        })
+        const googleForm = document.createElement('form');
+        googleForm.method = 'POST';
+        googleForm.action = GOOGLE_FORM_ACTION;
+        googleForm.target = 'hiddenGoogleFrame';
+        googleForm.acceptCharset = 'UTF-8';
+        googleForm.style.display = 'none';
+
+        Object.keys(values).forEach(function(entryId) {
+          const field = document.createElement('input');
+          field.type = 'hidden';
+          field.name = entryId;
+          field.value = values[entryId] == null ? '' : String(values[entryId]);
+          googleForm.appendChild(field);
+        });
+
+        let finished = false;
+        const timeout = window.setTimeout(function() {
+          if (finished) return;
+          finished = true;
+          iframe.removeEventListener('load', onLoad);
+          googleForm.remove();
+          reject(new Error('Timed out waiting for Google Forms response.'));
+        }, 15000);
+
+        function onLoad() {
+          if (finished) return;
+          finished = true;
+          window.clearTimeout(timeout);
+          iframe.removeEventListener('load', onLoad);
+          googleForm.remove();
+          resolve(true);
+        }
+
+        iframe.addEventListener('load', onLoad);
+        document.body.appendChild(googleForm);
+        googleForm.submit();
       });
+    }
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Discord API error ${response.status}: ${errorText}`);
-      }
-      return true;
+    function sendApplicationToDiscord(values) {
+      return new Promise(function(resolve, reject) {
+        const iframe = getEl('hiddenDiscordFrame');
+        if (!iframe) {
+          reject(new Error('Discord relay target iframe is missing.'));
+          return;
+        }
+
+        const relayForm = document.createElement('form');
+        relayForm.method = 'POST';
+        relayForm.action = DISCORD_RELAY_URL;
+        relayForm.target = 'hiddenDiscordFrame';
+        relayForm.acceptCharset = 'UTF-8';
+        relayForm.style.display = 'none';
+
+        // These names must match the e.parameter keys expected by Apps Script.
+        const relayValues = {
+          email: values.email,
+          nicknames: values.nicknames,
+          discordId: values.discordId,
+          twitch: values.twitch,
+          creator: values.creator,
+          tagLogo: values.tagLogo,
+          requirementsMatch: values.requirementsMatch,
+          about: values.about
+        };
+
+        Object.keys(relayValues).forEach(function(name) {
+          const field = document.createElement('input');
+          field.type = 'hidden';
+          field.name = name;
+          field.value = relayValues[name] == null ? '' : String(relayValues[name]);
+          relayForm.appendChild(field);
+        });
+
+        let finished = false;
+        const timeout = window.setTimeout(function() {
+          if (finished) return;
+          finished = true;
+          iframe.removeEventListener('load', onLoad);
+          relayForm.remove();
+          reject(new Error('Timed out waiting for the Apps Script relay.'));
+        }, 20000);
+
+        function onLoad() {
+          if (finished) return;
+          finished = true;
+          window.clearTimeout(timeout);
+          iframe.removeEventListener('load', onLoad);
+          relayForm.remove();
+          // Cross-origin iframe responses cannot be inspected by this page.
+          // This confirms the POST navigation completed, not Discord acceptance.
+          resolve(true);
+        }
+
+        iframe.addEventListener('load', onLoad);
+        document.body.appendChild(relayForm);
+        relayForm.submit();
+      });
     }
 
     getEl('reminderContinue').addEventListener('click', function() {
@@ -402,24 +466,32 @@
 
       const discordTab = window.open('about:blank', '_blank');
 
-      const data = new FormData();
-      data.append(GOOGLE_ENTRY_IDS.email, values.email);
-      data.append(GOOGLE_ENTRY_IDS.nicknames, values.nicknames);
-      data.append(GOOGLE_ENTRY_IDS.discordId, values.discordId);
-      data.append(GOOGLE_ENTRY_IDS.twitch, values.twitch);
-      data.append(GOOGLE_ENTRY_IDS.creator, values.creator);
-      data.append(GOOGLE_ENTRY_IDS.tagLogo, values.tagLogo);
-      data.append(GOOGLE_ENTRY_IDS.about, values.about);
-      data.append(GOOGLE_ENTRY_IDS.requirementsMatch, values.requirementsMatch);
+      // Submit Google Forms through a normal HTML POST targeted at the
+      // hidden iframe. This avoids fetch/no-cors and multipart FormData issues.
+      const googleValues = {};
+      googleValues[GOOGLE_ENTRY_IDS.email] = values.email;
+      googleValues[GOOGLE_ENTRY_IDS.nicknames] = values.nicknames;
+      googleValues[GOOGLE_ENTRY_IDS.discordId] = values.discordId;
+      googleValues[GOOGLE_ENTRY_IDS.twitch] = values.twitch;
+      googleValues[GOOGLE_ENTRY_IDS.creator] = values.creator;
+      googleValues[GOOGLE_ENTRY_IDS.tagLogo] = values.tagLogo;
+      googleValues[GOOGLE_ENTRY_IDS.about] = values.about;
+      googleValues[GOOGLE_ENTRY_IDS.requirementsMatch] = values.requirementsMatch;
 
-      fetch(GOOGLE_FORM_ACTION, { method:'POST', mode:'no-cors', body:data })
-        .catch(function(error){ console.error('Google Forms submission error:', error); });
+      try {
+        await submitToGoogleForms(googleValues);
+      } catch (error) {
+        console.error('Google Forms submission could not be confirmed:', error);
+        showMessage(formMessage, 'Google Forms did not respond. Your application has not been confirmed as submitted. Please try again.', 'warn');
+        if (discordTab) discordTab.close();
+        return;
+      }
 
       try {
         await sendApplicationToDiscord(values);
       } catch (error) {
         console.error('Discord application delivery failed:', error);
-        showMessage(formMessage, 'Your Google Form was submitted, but the Discord notification could not be sent. Please contact an administrator.', 'warn');
+        showMessage(formMessage, 'Your Google Form was sent, but the Discord relay could not be reached. Please contact an administrator.', 'warn');
       }
 
       markApplication();
